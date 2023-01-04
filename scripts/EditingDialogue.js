@@ -70,7 +70,7 @@ export class EditingDialogue extends FormApplication {
      * @returns {[{string: {translations: {language: string, text: string}}}, int]}
      */
     static async loadTranslationsForModule(module) {
-        logger.info(`Loading translations for ${module.data.name}.`)
+        logger.info(`Loading translations for ${module.id}.`)
         const languages = module.languages
         let out = {}
         if (languages.length > 0) {
