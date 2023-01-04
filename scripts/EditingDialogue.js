@@ -42,7 +42,7 @@ export class EditingDialogue extends FormApplication {
      * @param  {function} callback - Function to apply to each array item loop
      */
     static async asyncForEach(array, callback) {
-        for (let index = 0; index < array.length; index += 1) {
+        for (let index = 0; index < array.size; index += 1) {
             await callback(array[index], index, array)
         }
     }
@@ -73,7 +73,7 @@ export class EditingDialogue extends FormApplication {
         logger.info(`Loading translations for ${module.id}.`)
         const languages = module.languages
         let out = {}
-        if (languages.length > 0) {
+        if (languages.size > 0) {
             await this.asyncForEach(languages, async (language) => {
                 let request = await fetch(language.path)
                 let languageData = await request.json()
@@ -102,7 +102,7 @@ export class EditingDialogue extends FormApplication {
             if (module.active) {
                 // noinspection ES6RedundantAwait
                 let [translationsForModule, languages] = await EditingDialogue.loadTranslationsForModule(module)
-                if (Object.keys(translationsForModule).length > 0) {
+                if (Object.keys(translationsForModule).size > 0) {
                     this.TRANSLATIONS[module.id] = {
                         name: module.data.title,
                         languages: languages,
@@ -148,11 +148,11 @@ export class EditingDialogue extends FormApplication {
             toLanguageSelect.append(`<option value="${languageData.lang}">${languageData.name}</option>`)
         }
 
-        if (fromLanguage.length === 0) {
+        if (fromLanguage.size === 0) {
             fromLanguage = languages[0]
-            toLanguage = languages.length > 1 ? languages[1] : languages[0]
+            toLanguage = languages.size > 1 ? languages[1] : languages[0]
         } else {
-            toLanguage = languages.length > 1 ? (languages[0].lang !== fromLanguage.lang ? languages[0] : languages[1]) : fromLanguage
+            toLanguage = languages.size > 1 ? (languages[0].lang !== fromLanguage.lang ? languages[0] : languages[1]) : fromLanguage
         }
 
         fromLanguageSelect.val(fromLanguage.lang)
@@ -177,13 +177,13 @@ export class EditingDialogue extends FormApplication {
             tableBody += `<tr data-translationkey="${translationKey}">`
             tableBody += `<td>${translationKey}</td>`
             if (translations.hasOwnProperty(fromLanguage.lang)) {
-                tableBody += `<td><span class="fromText">${translations[fromLanguage.lang]}</span><span class="characterCount">(${translations[fromLanguage.lang].length ?? 0})</span></td>`
+                tableBody += `<td><span class="fromText">${translations[fromLanguage.lang]}</span><span class="characterCount">(${translations[fromLanguage.lang].size ?? 0})</span></td>`
             } else {
                 tableBody += '<td><span class="fromText"></span><span class="characterCount">(0)</span></td>'
             }
 
             if (translations.hasOwnProperty(toLanguage.lang)) {
-                tableBody += `<td><textarea>${translations[toLanguage.lang]}</textarea><span class="characterCount">(${translations[toLanguage.lang].length ?? 0})</span></td>`
+                tableBody += `<td><textarea>${translations[toLanguage.lang]}</textarea><span class="characterCount">(${translations[toLanguage.lang].size ?? 0})</span></td>`
             } else {
                 tableBody += '<td><textarea></textarea><span class="characterCount">(0)</span></td>'
             }
@@ -249,7 +249,7 @@ export class EditingDialogue extends FormApplication {
             } else {
                 cell.find('span').text(textInLanguage)
             }
-            cell.find('> span.characterCount').html(`(${textInLanguage.length})`)
+            cell.find('> span.characterCount').html(`(${textInLanguage.size})`)
             logger.debug(translationData)
         }
     }
@@ -316,7 +316,7 @@ export class EditingDialogue extends FormApplication {
         logger.debug(finalData)
 
         let targetLanguageData = EditingDialogue.TRANSLATIONS[moduleId].languages.filter(l => l.lang === targetLanguage)
-        if (targetLanguageData.length === 1) {
+        if (targetLanguageData.size === 1) {
             let fileContent = JSON.stringify(finalData, null, 4)
             if (isDownload) {
                 saveDataToFile(fileContent, "text/json", `${moduleId}-${targetLanguage}.json`);
@@ -393,7 +393,7 @@ export class EditingDialogue extends FormApplication {
         })
 
         html.find('table > tbody').on('keyup', '> tr > td > textarea', function () {
-            $(this).find('+ span.characterCount').html(`(${$(this).val().length})`)
+            $(this).find('+ span.characterCount').html(`(${$(this).val().size})`)
             form.data('unsavedData', true)
         })
 
