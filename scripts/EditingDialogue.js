@@ -36,18 +36,6 @@ export class EditingDialogue extends FormApplication {
     }
 
     /**
-     * Async for each loop
-     *
-     * @param  {array} array - Array to loop through
-     * @param  {function} callback - Function to apply to each array item loop
-     */
-    static async asyncForEach(array, callback) {
-        for (let index = 0; index < array.size; index += 1) {
-            await callback(array[index], index, array)
-        }
-    }
-
-    /**
      * Change the state of the module select and the loading icon.
      */
     static toggleSelect() {
@@ -74,7 +62,7 @@ export class EditingDialogue extends FormApplication {
         const languages = module.languages
         let out = {}
         if (languages.size > 0) {
-            await this.asyncForEach(languages, async (language) => {
+            await Promise.all(languages.map(async (language) => {
                 let request = await fetch(language.path)
                 let languageData = await request.json()
                 // noinspection JSUnresolvedFunction
@@ -91,7 +79,7 @@ export class EditingDialogue extends FormApplication {
                     }
                     out[languageDataKey].translations[language.lang] = languageData[languageDataKey]
                 }
-            })
+            }))
         }
 
         return [out, languages]
