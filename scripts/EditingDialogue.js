@@ -90,6 +90,7 @@ export class EditingDialogue extends FormApplication {
             if (module.active) {
                 // noinspection ES6RedundantAwait
                 let [translationsForModule, languages] = await EditingDialogue.loadTranslationsForModule(module)
+                logger.debug('name:$(module.data.title)\ndata:\n$(Object.keys(translationsForModule))\n\n\nSize:$(Object.keys(translationsForModule).size)\n\n----------------')
                 if (Object.keys(translationsForModule).size > 0) {
                     this.TRANSLATIONS[module.id] = {
                         name: module.data.title,
